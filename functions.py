@@ -56,7 +56,7 @@ Matrix Subtraction
 mat1, mat2 - 2D Lists (matrices) to be subtracted
 RETURNS resultMat - The resulting matrix from the subtraction of mat1 and mat2, empty list if mat1 and mat2 are invalid
 '''
-def matrixAdd(mat1, mat2):
+def matrixSub(mat1, mat2):
     # Initialize starting matrix
     dim1 = len(mat1)
     dim2 = len(mat1[0])
