@@ -16,21 +16,10 @@ while active:
         print("You must input an integer among the options given.")
         continue
 
-    if choice != 4 and choice != 5:
-        print('How many matrices are there?')
-        count = input()
-    else:
+    if choice > 3:
         count = 1
-
-    try:
-        count = int(count)
-    except ValueError:
-        print("You must input an integer.")
-        continue
-
-    if (choice != 4 and choice != 5) and count < 2:
-        print('This operation requires at least two matrices to be inputted.')
-        continue
+    else:
+        count = 2
 
     matrices = []
     matrix_count = 0
@@ -87,6 +76,4 @@ while active:
 
         matrices.append(matrix)
         matrix_count += 1
-
-    print(matrices)
 
