@@ -107,7 +107,8 @@ while active:
         result = functions.matrixTranspose(matrices[0])
 
     print('Output:\n')
-    print(result)
+    for r in range(len(result)):
+        print(result[r])
     print('\nWould you like to compute another matrix operation? Press \'Y\' to continue, or any other key to exit.')
     repeat = input()
     if repeat == 'Y':
