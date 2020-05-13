@@ -254,23 +254,29 @@ mat - 2D List (matrix) to be inverted
 RETURNS invertedMat - Inverted version of the given matrix, leaving original matrix unedited
 STATUS: Currently very dysfunctional :,(
 '''
+
+
 def invertMatrix(mat):
+    if (ensureSquareMatrix(mat) == False):
+        print("Matrix can not be inverted - Matrix not square.")
+        return mat
+
     import copy
     dim = len(mat)
-    invertedMat = copy.deepcopy(mat) # Deep copy to leave the original
+    invertedMat = copy.deepcopy(mat)  # Deep copy to leave the original
     identityMat = createIdentityMatrix(dim)
-    
+
     # We now proceed with our row operations
+    indices = list(range(dim))
     for diagonal in range(dim):
         diagInt = 1.0 / invertedMat[diagonal][diagonal]
-        for col in range(dim): # Tackle columns
+        for col in range(dim):  # Tackle columns
             invertedMat[diagonal][col] *= diagInt
             identityMat[diagonal][col] *= diagInt
         'This is where the website in the cell above comes in. Avoiding the diagonals was just a matter of slicing.'
-        indices = list(range(dim))
-        for row in indices[0:diagonal] + indices[diagonal+1:]: # Tackle rows -- The slicing skips the diagonal
+        for row in indices[0:diagonal] + indices[diagonal + 1:]:  # Tackle rows -- The slicing skips the diagonal
             rowInt = invertedMat[row][diagonal]
             for el in range(dim):
                 invertedMat[row][el] = invertedMat[row][el] - rowInt * invertedMat[diagonal][el]
                 identityMat[row][el] = identityMat[row][el] - rowInt * identityMat[diagonal][el]
-    return invertedMat, identityMat
+    return invertedMat
