@@ -91,21 +91,21 @@ RETURNS resultMat - The resulting matrix from the multiplication of mat1 and mat
 
 
 def matrixMult(mat1, mat2):
+    return matrixDot(mat1, mat2) # I don't think matrix multiplication is a thing, oops
     # Initialize starting matrix
     dim1 = len(mat1)
     dim2 = len(mat1[0])
-    resultMatrix = [] * dim2
-    if (checkSize(mat1, mat2) != 1):
+    resultMatrix = []*dim2
+    if(checkSize(mat1, mat2) != 1):
         print("Matrices can not be added. Dimension mismatch.")
         resultMatrix = []
     else:
         for i in range(dim1):
-            newRow = [
-                         0] * dim1  # Need this notation since attempting a double multiplication leads to reference variable issues
+            newRow = [0]*dim1 # Need this notation since attempting a double multiplication leads to reference variable issues
             for j in range(dim2):
                 newRow[j] = mat1[i][j] * mat2[i][j]
             resultMatrix.append(newRow)
-
+        
     return resultMatrix
 
 
@@ -177,3 +177,100 @@ def matrixTranspose(mat):
         for j in range(len(mat[0])):
             newMat[i][j] = mat[j][i]
     return newMat
+    
+# Determinant Calculator
+'''
+Calculate Determinant
+mat - Matrix to find the determinant of
+
+RETURNS det - The determinant of the matrix
+'''
+
+def calcDeterminant(mat):
+    det = 0
+    # Trick from the previous site
+    dim1 = len(mat)
+    dim2 = len(mat[0])
+    indices = list(range(dim1))
+     
+    # 2x2 matrix base case since I'm doing this recursively
+    if dim1 == 2 and dim2 == 2:
+        baseDet = mat[0][0] * mat[1][1] - mat[1][0] * mat[0][1]
+        return baseDet
+ 
+    for col in indices:
+        # Create a submatrix
+        import copy
+        modMat = copy.deepcopy(mat)
+        modMat = modMat[1:]
+        numRows = len(modMat)
+ 
+        for row in range(numRows): 
+            modMat[row] = modMat[row][0:col] + modMat[row][col+1:]
+        
+        # Get the sign of the current column
+        sign = (-1) ** (col % 2)
+        # Find determinant of our "submatrix"
+        subMatDet = calcDeterminant(modMat)
+        # Add up all sub determinants to get final determinant
+        det += sign * mat[0][col] * subMatDet
+ 
+    return det
+    
+# Matrix Inversion
+
+'''
+Ensure Square Matrix
+mat - 2D List (matrix) to be checked
+
+RETURNS square - True if square matrix, false if non-square matrix
+'''
+def ensureSquareMatrix(mat):
+    dim1 = len(mat)
+    dim2 = len(mat[0])
+    if(dim1 == dim2): return True
+    else: return False
+
+'''
+Create Identity Matrix
+dim - Integer representing the dimension of the matrix to be generated
+
+RETURNS identityMat - Identify matrix of dimension dim
+'''
+def createIdentityMatrix(dim):
+    identityMat = []
+    for i in range(dim):
+        newRow = [0]*dim
+        for j in range(dim):
+            if(i == j):
+                newRow[i] = 1
+        identityMat.append(newRow)
+    return identityMat
+
+'''
+Invert Matrix
+mat - 2D List (matrix) to be inverted
+
+RETURNS invertedMat - Inverted version of the given matrix, leaving original matrix unedited
+STATUS: Currently very dysfunctional :,(
+'''
+def invertMatrix(mat):
+    import copy
+    dim = len(mat)
+    invertedMat = copy.deepcopy(mat) # Deep copy to leave the original
+    identityMat = createIdentityMatrix(dim)
+    
+    # We now proceed with our row operations
+    for diagonal in range(dim):
+        diagInt = 1.0 / invertedMat[diagonal][diagonal]
+        for col in range(dim): # Tackle columns
+            invertedMat[diagonal][col] *= diagInt
+            identityMat[diagonal][col] *= diagInt
+        'This is where the website in the cell above comes in. Avoiding the diagonals was just a matter of slicing.'
+        indices = list(range(dim))
+        for row in indices[0:diagonal] + indices[diagonal+1:]: # Tackle rows -- The slicing skips the diagonal
+            rowInt = invertedMat[row][diagonal]
+            for el in range(dim):
+                invertedMat[row][el] = invertedMat[row][el] - rowInt * invertedMat[diagonal][el]
+                identityMat[row][el] = identityMat[row][el] - rowInt * identityMat[diagonal][el]
+    return invertedMat, identityMat
